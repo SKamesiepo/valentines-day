@@ -254,7 +254,7 @@
             <div id="letterContentWrapper" class="w-full flex flex-col items-center content-transition" style="opacity: 1;">
                 
                 <!-- Dynamic Content Goes Here -->
-                <div id="letterText" class="text-xl text-gray-800 font-medium leading-relaxed text-center">
+                <div id="letterText" class="text-base text-gray-800 font-medium leading-relaxed text-center">
                     <!-- Javascript will populate this -->
                 </div>
                 
@@ -419,15 +419,15 @@
 
                 // Handle Long Text Style & Scroll Behavior
                 if (slide.isLong) {
-                    textDiv.classList.add('text-sm', 'text-left'); 
-                    textDiv.classList.remove('text-xl', 'text-center');
+                    textDiv.classList.add('text-xs', 'text-left'); // Reduced size
+                    textDiv.classList.remove('text-base', 'text-center');
                     
                     // Enable Scroll for Long Letter & Align Top
                     scrollContainer.classList.remove('justify-center', 'overflow-hidden');
                     scrollContainer.classList.add('justify-start', 'overflow-y-auto', 'custom-scroll');
                 } else {
-                    textDiv.classList.add('text-xl', 'text-center');
-                    textDiv.classList.remove('text-sm', 'text-left');
+                    textDiv.classList.add('text-base', 'text-center'); // Reduced size
+                    textDiv.classList.remove('text-xs', 'text-left');
 
                     // Disable Scroll / Center Content for Slides
                     scrollContainer.classList.add('justify-center', 'overflow-hidden');
