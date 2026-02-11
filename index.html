@@ -245,10 +245,10 @@
 
     <!-- LOVE LETTER SECTION -->
     <!-- Max height ensures it fits on screen, Flex layout for scrolling -->
-    <div id="letterCard" class="glass-card rounded-3xl p-6 w-11/12 max-w-sm relative z-40 h-[450px] max-h-[85vh]">
+    <div id="letterCard" class="glass-card rounded-3xl p-6 w-11/12 max-w-sm relative z-40 h-[550px] max-h-[90vh]">
         
-        <!-- Scrollable Content Area -->
-        <div class="flex-grow overflow-y-auto custom-scroll px-2 py-2 flex flex-col items-center w-full">
+        <!-- Content Area: Default is centered and no scroll for short slides -->
+        <div id="scrollContainer" class="flex-grow flex flex-col items-center justify-center w-full px-2 py-2 overflow-hidden">
             
             <!-- Content Wrapper for Fade Effect -->
             <div id="letterContentWrapper" class="w-full flex flex-col items-center content-transition" style="opacity: 1;">
@@ -259,7 +259,7 @@
                 </div>
                 
                 <!-- Image Container -->
-                <img id="letterImg" class="mt-6 max-w-[90%] max-h-64 object-contain hidden" src="" alt="Photo" />
+                <img id="letterImg" class="mt-6 max-w-[90%] max-h-72 object-contain hidden" src="" alt="Photo" />
             </div>
 
             <!-- Loader (shown while image loads) -->
@@ -394,6 +394,7 @@
         }
 
         function updateSlideContent(isFirst) {
+            const scrollContainer = document.getElementById('scrollContainer');
             const wrapper = document.getElementById('letterContentWrapper');
             const textDiv = document.getElementById('letterText');
             const img = document.getElementById('letterImg');
@@ -416,13 +417,21 @@
                 textDiv.innerHTML = slide.text;
                 btn.innerText = slide.btn;
 
-                // Handle Long Text Style
+                // Handle Long Text Style & Scroll Behavior
                 if (slide.isLong) {
                     textDiv.classList.add('text-sm', 'text-left'); 
                     textDiv.classList.remove('text-xl', 'text-center');
+                    
+                    // Enable Scroll for Long Letter & Align Top
+                    scrollContainer.classList.remove('justify-center', 'overflow-hidden');
+                    scrollContainer.classList.add('justify-start', 'overflow-y-auto', 'custom-scroll');
                 } else {
                     textDiv.classList.add('text-xl', 'text-center');
                     textDiv.classList.remove('text-sm', 'text-left');
+
+                    // Disable Scroll / Center Content for Slides
+                    scrollContainer.classList.add('justify-center', 'overflow-hidden');
+                    scrollContainer.classList.remove('justify-start', 'overflow-y-auto', 'custom-scroll');
                 }
 
                 // 4. Handle Image Loading
