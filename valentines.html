@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Princess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- General Styles --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .hand-writing {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* Animated Background Gradient */
+        .animated-bg {
+            background: linear-gradient(-45deg, #ff4d4d, #ffb6c1, #4169e1, #ff99cc);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Hearts */
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -100px;
+            animation: floatUp linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        /* --- Envelope Styles --- */
+        .envelope-container {
+            perspective: 1000px;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+        
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #ff99cc; /* Pink Base */
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 20;
+            transition: transform 0.5s ease;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ffb6c1; 
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out, z-index 0.6s ease-in-out;
+            z-index: 30;
+        }
+
+        .flap.open {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 100px solid #ff80ab;
+            border-radius: 0 0 10px 10px;
+            z-index: 30;
+            pointer-events: none;
+        }
+        
+        .seal {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 40;
+            animation: pulse 1.5s infinite;
+            transition: opacity 0.3s;
+        }
+
+        /* --- Card Styles --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transform: scale(0.5) translateY(100px); 
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: none; /* Hidden by default */
+        }
+
+        .glass-card.visible {
+            display: flex; /* Changed to flex for internal layout */
+            flex-direction: column;
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 50; 
+        }
+        
+        /* Fade transition for text changes */
+        .content-transition {
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* Romantic Photo Frame Style */
+        .romantic-frame {
+            border: 8px solid #fff;
+            outline: 3px dashed #ff4d4d;
+            outline-offset: -4px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+        .romantic-frame:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        
+        .envelope-wrapper.hidden-envelope {
+            transform: translateY(200px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff4d4d;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Scrollbar Styling */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 77, 77, 0.5);
+            border-radius: 20px;
+        }
+
+        /* Utility Animations */
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+            70% { transform: translateX(-50%) scale(1.1); box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+            100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+
+        .pop-in { animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .confetti { position: absolute; width: 10px; height: 10px; z-index: 100; }
+        
+        .fade-out { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative overflow-hidden">
+
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="hearts-container" id="bgHearts"></div>
+
+    <!-- ENVELOPE SECTION -->
+    <div id="envelopeWrapper" class="envelope-container absolute transition-all duration-1000 z-40" onclick="openEnvelope()">
+        <div class="envelope">
+            <div class="flap" id="flap">
+                <div class="seal" id="seal">❤️</div>
+            </div>
+            <div class="pocket"></div>
+            <div id="envelopeText" class="absolute bottom-8 w-full text-center z-40 transition-opacity duration-300">
+                <p class="hand-writing text-2xl text-white font-bold drop-shadow-md">For My Princess</p>
+                <p class="text-xs text-white opacity-80 mt-1 uppercase tracking-widest">Tap to Open</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANTICIPATION SCREEN -->
+    <div id="anticipation" class="hidden absolute inset-0 z-40 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="text-6xl animate-bounce mb-4">💭</div>
+        <p class="hand-writing text-5xl text-white font-bold drop-shadow-lg animate-pulse">Wait for it...</p>
+    </div>
+
+    <!-- LOVE LETTER SECTION -->
+    <!-- Max height ensures it fits on screen, Flex layout for scrolling -->
+    <div id="letterCard" class="glass-card rounded-3xl p-6 w-11/12 max-w-sm relative z-40 h-[450px] max-h-[85vh]">
+        
+        <!-- Scrollable Content Area -->
+        <div class="flex-grow overflow-y-auto custom-scroll px-2 py-2 flex flex-col items-center w-full">
+            
+            <!-- Content Wrapper for Fade Effect -->
+            <div id="letterContentWrapper" class="w-full flex flex-col items-center content-transition" style="opacity: 1;">
+                
+                <!-- Dynamic Content Goes Here -->
+                <div id="letterText" class="text-xl text-gray-800 font-medium leading-relaxed text-center">
+                    <!-- Javascript will populate this -->
+                </div>
+                
+                <!-- Image Container -->
+                <img id="letterImg" class="mt-6 max-w-[90%] max-h-64 object-contain hidden" src="" alt="Photo" />
+            </div>
+
+            <!-- Loader (shown while image loads) -->
+            <div id="slideLoader" class="loader hidden my-auto"></div>
+        </div>
+
+        <!-- Fixed Footer Area -->
+        <div class="flex-shrink-0 pt-4 flex justify-center border-t border-white/50 mt-2">
+            <button id="letterBtn" onclick="nextSlide()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 active:scale-95 w-full">
+                Next
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN PROPOSAL CARD -->
+    <div id="mainCard" class="glass-card rounded-3xl p-8 w-11/12 max-w-sm text-center relative z-10">
+        
+        <!-- Header -->
+        <div class="mb-6">
+            <span class="text-blue-600 text-4xl animate-bounce inline-block">👑</span>
+            <h1 class="hand-writing text-5xl text-pink-600 mb-2 mt-2 drop-shadow-sm">Snookums</h1>
+            <p class="text-gray-700 font-semibold text-lg">The question is...</p>
+        </div>
+
+        <!-- The Big Question -->
+        <div class="my-8">
+            <h2 class="text-3xl font-extrabold text-red-500 leading-tight">Will you be my<br>Valentine?</h2>
+        </div>
+
+        <!-- Interactive Buttons -->
+        <div class="flex flex-col gap-4 justify-center items-center h-48 relative">
+            <button onclick="acceptProposal()" class="heartbeat w-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg text-xl transition transform hover:scale-105 active:scale-95 z-20">
+                YES! ❤️
+            </button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()" ontouchstart="moveButton()" class="w-full bg-blue-100 text-blue-600 font-bold py-3 rounded-xl shadow-sm text-lg transition-all absolute bottom-0 z-10">
+                No 😢
+            </button>
+        </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div id="successScreen" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center text-center p-6 bg-white/30 backdrop-blur-md">
+        <div class="pop-in bg-white p-10 rounded-3xl shadow-2xl border-4 border-pink-300 flex flex-col items-center w-full max-w-sm">
+            <div class="text-6xl mb-4">💖👑💙</div>
+            <h1 class="hand-writing text-6xl text-red-500 mb-4">Yay!!!</h1>
+            <p class="text-xl text-gray-800 font-semibold mb-6">I'm a happy man fr</p>
+            <p class="text-blue-500 text-sm font-bold mb-6">I can't wait to see your gorgeous face, see your pretty smile and listen to your lovely voice again xoxoxoxoxoxox</p>
+
+            <button onclick="resetExperience()" class="mt-2 bg-gradient-to-r from-pink-400 to-red-400 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95 animate-pulse">
+                Do you want to say "Yes" again? 🙈
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* --- Data for the Letter Slides --- */
+        const letterSlides = [
+            { 
+                text: "Do you know what I think of you, my baby?", 
+                btn: "Please tell me", 
+                img: "https://i.imgur.com/9gLfcBl.png" 
+            },
+            { 
+                text: "I think that you have the most gentle, kind and beautiful heart ❤️", 
+                btn: "What else...",
+                img: "https://i.imgur.com/8ypzPKp.jpeg"
+            },
+            { 
+                text: "I think that you are the funniest woman on planet Earth, because you can make me laugh till I start crying 😂", 
+                btn: "Is that all?",
+                img: "https://i.imgur.com/YlS4Y3o.jpeg"
+            },
+            { 
+                text: "I think that God spent twice as long when creating you, because he had to make one of his best creations 😍", 
+                btn: "Do you really think that?",
+                img: "https://i.imgur.com/kt2xZll.jpeg"
+            },
+            { 
+                text: "Eish maybe I wasn't clear, but just if you forgot, you are drop dead gorgeous babygirl! 🥵🥵🥵", 
+                btn: "Really? I want to read more",
+                img: "https://i.imgur.com/Qdlt1Xj.jpeg"
+            },
+            { 
+                text: "But that's not all I want to say...", 
+                btn: "What do you mean?",
+                img: "https://i.imgur.com/MjPfWPB.jpeg"
+            },
+            { 
+                text: "You complete me. You complete me in a way that has my heart aching when you are not near. When my mind wanders to places that remind me of all the blessings in my life, you're one of the first thoughts. <br><br> I love spending time with you, whether it's for one hour or even if it's just for one minute. I treasure all the opportunities I can get to look at your face, to see the way the top part of your cheeks wrinkle when you smile, the way your eyes have so much joy, sparkle and love in them, always manages to make my day better. <br><br> I want to be the same way for you, I want to soothe you, to comfort you and to motivate you. This is what a man must do for someone he loves and adores. There isn’t a single doubt in my heart or mind that I’ll show up for you in all the ways you deserve. <br><br> Thank you my love and I hope you have a mooi day, but before you go, I have to ask that question...", 
+                btn: "Ask me... 🥺",
+                isLong: true 
+            }
+        ];
+
+        let currentSlideIndex = 0;
+        let isTransitioning = false; // Prevent double clicks
+
+        // --- 1. Envelope & Anticipation Logic ---
+        function openEnvelope() {
+            const flap = document.getElementById('flap');
+            const seal = document.getElementById('seal');
+            const envelopeWrapper = document.getElementById('envelopeWrapper');
+            const anticipation = document.getElementById('anticipation');
+            const envelopeText = document.getElementById('envelopeText');
+
+            flap.classList.add('open');
+            seal.style.opacity = '0'; 
+
+            setTimeout(() => {
+                envelopeWrapper.classList.add('hidden-envelope');
+                envelopeText.style.opacity = '0';
+                anticipation.classList.remove('hidden');
+                
+                // Show "Wait for it..." then launch Letter
+                setTimeout(() => {
+                    anticipation.classList.add('fade-out');
+                    setTimeout(() => {
+                         anticipation.classList.add('hidden');
+                         startLetterSequence(); // Start Letter instead of Proposal
+                    }, 500);
+                }, 2000); 
+
+            }, 600);
+        }
+
+        // --- 2. Letter Sequence Logic ---
+        function startLetterSequence() {
+            const letterCard = document.getElementById('letterCard');
+            currentSlideIndex = 0;
+            updateSlideContent(true); // First load
+            letterCard.classList.add('visible');
+        }
+
+        function updateSlideContent(isFirst) {
+            const wrapper = document.getElementById('letterContentWrapper');
+            const textDiv = document.getElementById('letterText');
+            const img = document.getElementById('letterImg');
+            const btn = document.getElementById('letterBtn');
+            const loader = document.getElementById('slideLoader');
+            
+            const slide = letterSlides[currentSlideIndex];
+
+            // 1. Fade OUT existing content
+            wrapper.style.opacity = 0;
+            btn.disabled = true; // Disable button during transition
+
+            setTimeout(() => {
+                // 2. Hide image immediately so old one doesn't show
+                img.classList.add('hidden');
+                img.classList.remove('romantic-frame', 'bg-white'); // REMOVE FRAME STYLES INITIALLY
+                img.src = ""; // Clear source to prevent ghosting
+                
+                // 3. Update Text & Button
+                textDiv.innerHTML = slide.text;
+                btn.innerText = slide.btn;
+
+                // Handle Long Text Style
+                if (slide.isLong) {
+                    textDiv.classList.add('text-sm', 'text-left'); 
+                    textDiv.classList.remove('text-xl', 'text-center');
+                } else {
+                    textDiv.classList.add('text-xl', 'text-center');
+                    textDiv.classList.remove('text-sm', 'text-left');
+                }
+
+                // 4. Handle Image Loading
+                if (slide.img) {
+                    loader.classList.remove('hidden'); // Show spinner
+                    
+                    // Create a temporary image to preload
+                    const tempImg = new Image();
+                    tempImg.onload = () => {
+                        // Image loaded!
+                        img.src = slide.img;
+                        img.classList.remove('hidden');
+                        img.classList.add('romantic-frame', 'bg-white'); // ADD FRAME STYLES ONLY ON SUCCESS
+                        loader.classList.add('hidden'); // Hide spinner
+                        wrapper.style.opacity = 1; // Fade IN
+                        btn.disabled = false;
+                        isTransitioning = false;
+                    };
+                    tempImg.onerror = () => {
+                        // If image fails, just show text, DO NOT SHOW FRAME
+                        loader.classList.add('hidden');
+                        wrapper.style.opacity = 1;
+                        btn.disabled = false;
+                        isTransitioning = false;
+                    };
+                    tempImg.src = slide.img; // Start loading
+                } else {
+                    // No Image for this slide
+                    loader.classList.add('hidden');
+                    wrapper.style.opacity = 1; // Fade IN
+                    btn.disabled = false;
+                    isTransitioning = false;
+                }
+
+            }, isFirst ? 0 : 400); // Wait for fade out if not first slide
+        }
+
+        function nextSlide() {
+            if (isTransitioning) return; // Prevent double clicks
+            isTransitioning = true;
+
+            if (currentSlideIndex < letterSlides.length - 1) {
+                currentSlideIndex++;
+                updateSlideContent(false);
+            } else {
+                // End of letter, show proposal
+                const letterCard = document.getElementById('letterCard');
+                const mainCard = document.getElementById('mainCard');
+                
+                letterCard.style.transform = "translateX(-100vw)";
+                letterCard.style.opacity = "0";
+                
+                setTimeout(() => {
+                    letterCard.classList.remove('visible');
+                    letterCard.style.display = 'none'; // Ensure it's gone
+                    mainCard.classList.add('visible');
+                }, 500);
+            }
+        }
+
+        // --- 3. Floating Hearts Background ---
+        function createFloatingHearts() {
+            const container = document.getElementById('bgHearts');
+            const colors = ['#FF4D4D', '#FFB6C1', '#4169E1'];
+            const heartSymbols = ['❤', '💙', '💖'];
+
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerText = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 10000);
+            }, 300);
+        }
+
+        // --- 4. No Button Logic ---
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const maxMove = 100;
+            const randomX = (Math.random() * maxMove * 2) - maxMove;
+            const randomY = (Math.random() * maxMove * 2) - maxMove;
+            btn.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 20 - 10}deg)`;
+            btn.innerText = ["Ek nxa nie!", "Wrong button", "You are confused :)", "Pick YES!", "Ha ah, I don't want", "Try again baby"][Math.floor(Math.random() * 4)];
+            btn.style.backgroundColor = "#fee2e2"; 
+        }
+
+        // --- 5. Success Logic ---
+        function acceptProposal() {
+            const card = document.getElementById('mainCard');
+            const success = document.getElementById('successScreen');
+            card.style.transform = "scale(0)";
+            card.style.opacity = "0";
+            setTimeout(() => {
+                card.style.display = 'none';
+                success.classList.remove('hidden');
+                startConfetti();
+            }, 500);
+        }
+
+        // --- 6. Confetti ---
+        function startConfetti() {
+            const colors = ['#FF4D4D', '#4169E1', '#FFB6C1', '#FFD700', '#FFF'];
+            for(let i=0; i<150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = '50%';
+                    confetti.style.top = '50%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    const angle = Math.random() * Math.PI * 2;
+                    const tx = Math.cos(angle) * window.innerWidth * 0.8; 
+                    const ty = Math.sin(angle) * window.innerHeight * 0.8;
+                    confetti.animate([
+                        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                        { transform: `translate(calc(-50% + ${Math.cos(angle) * 300}px), calc(-50% + ${Math.sin(angle) * 300}px)) rotate(720deg) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: Math.random() * 1500 + 1000,
+                        easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                        fill: 'forwards'
+                    });
+                    document.body.appendChild(confetti);
+                }, i * 10);
+            }
+        }
+
+        // --- 7. Reset Logic ---
+        function resetExperience() {
+            location.reload();
+        }
+
+        // Init
+        createFloatingHearts();
+    </script>
+</body>
+</html>
